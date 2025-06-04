@@ -1,98 +1,106 @@
-```php
 <?php
-
 declare(strict_types=1);
 /** @var FreshRSS_View $this */
-$bottomline_read      = FreshRSS_Context::userConf()->bottomline_read;
-$bottomline_favorite  = FreshRSS_Context::userConf()->bottomline_favorite;
-$bottomline_sharing   = FreshRSS_Context::userConf()->bottomline_sharing && (count(FreshRSS_Context::userConf()->sharing) > 0);
-$bottomline_myLabels  = FreshRSS_Context::userConf()->bottomline_myLabels;
-$bottomline_tags      = FreshRSS_Context::userConf()->bottomline_tags;
-$bottomline_date      = FreshRSS_Context::userConf()->bottomline_date;
-$bottomline_link      = FreshRSS_Context::userConf()->bottomline_link;
+
+// Only declare each bottomline_* once
+$bottomline_read     = FreshRSS_Context::userConf()->bottomline_read;
+$bottomline_favorite = FreshRSS_Context::userConf()->bottomline_favorite;
+$bottomline_sharing  = FreshRSS_Context::userConf()->bottomline_sharing
+                     && (count(FreshRSS_Context::userConf()->sharing) > 0);
+$bottomline_myLabels = FreshRSS_Context::userConf()->bottomline_myLabels;
+$bottomline_tags     = FreshRSS_Context::userConf()->bottomline_tags;
+$bottomline_date     = FreshRSS_Context::userConf()->bottomline_date;
+$bottomline_link     = FreshRSS_Context::userConf()->bottomline_link;
 ?>
 
 <ul class="horizontal-list bottom">
-  <?php
-  if (FreshRSS_Auth::hasAccess()) {
-    if ($bottomline_read) {
-  ?>
+  <?php if (FreshRSS_Auth::hasAccess()) { ?>
+    <?php if ($bottomline_read) { ?>
       <li class="item manage">
         <?php
-        $arUrl = ['c' => 'entry', 'a' => 'read', 'params' => ['id' => $this->entry->id()]];
-        if ($this->entry->isRead()) {
-          $arUrl['params']['is_read'] = '0';
-        }
+          $arUrl = ['c' => 'entry', 'a' => 'read', 'params' => ['id' => $this->entry->id()]];
+          if ($this->entry->isRead()) {
+            $arUrl['params']['is_read'] = '0';
+          }
         ?>
-        <a class="item-element read" href="<?= Minz_Url::display($arUrl) ?>" title="<?= _t('conf.shortcut.mark_read') ?>">
+        <a class="item-element read"
+           href="<?= Minz_Url::display($arUrl) ?>"
+           title="<?= _t('conf.shortcut.mark_read') ?>">
           <?= _i($this->entry->isRead() ? 'read' : 'unread'); ?>
         </a>
       </li>
-
-    <?php
-    }
-
-    $extension             = Minz_ExtensionManager::findExtension('Wallabag Button');
-    $wallabag_button_icon  = $extension->getFileUrl('add_to_wallabag.svg', 'svg');
-    ?>
+    <?php } ?>
 
     <li class="item manage">
       <?php
-      $arUrl = ['c' => 'wallabagButton', 'a' => 'add', 'params' => ['id' => $this->entry->id()]];
+        $arUrl = ['c' => 'wallabagButton', 'a' => 'add', 'params' => ['id' => $this->entry->id()]];
+        $extension            = Minz_ExtensionManager::findExtension('Wallabag Button');
+        $wallabag_button_icon = $extension->getFileUrl('add_to_wallabag.svg', 'svg');
       ?>
-      <a class="item-element wallabagButton" href="<?= Minz_Url::display($arUrl); ?>">
+      <a class="item-element wallabagButton"
+         href="<?= Minz_Url::display($arUrl) ?>">
         <div class="lds-dual-ring disabled"></div>
         <img class="icon" src="<?= $wallabag_button_icon ?>" />
       </a>
     </li>
 
-    <?php
-    if ($bottomline_favorite) {
-    ?>
+    <?php if ($bottomline_favorite) { ?>
       <li class="item manage">
         <?php
-        $arUrl = ['c' => 'entry', 'a' => 'bookmark', 'params' => ['id' => $this->entry->id()]];
-
-        if ($this->entry->isFavorite()) {
-          $arUrl['params']['is_favorite'] = '0';
-        }
+          $arUrl = ['c' => 'entry', 'a' => 'bookmark', 'params' => ['id' => $this->entry->id()]];
+          if ($this->entry->isFavorite()) {
+            $arUrl['params']['is_favorite'] = '0';
+          }
         ?>
-        <a class="item-element bookmark" href="<?= Minz_Url::display($arUrl) ?>" title="<?= _t('conf.shortcut.mark_favorite') ?>">
+        <a class="item-element bookmark"
+           href="<?= Minz_Url::display($arUrl) ?>"
+           title="<?= _t('conf.shortcut.mark_favorite') ?>">
           <?= _i($this->entry->isFavorite() ? 'starred' : 'non-starred'); ?>
         </a>
       </li>
+    <?php } ?>
 
-    <?php } 
-  } ?>
+  <?php } // ← closes hasAccess() ?>
 
-  <?php
-  if ($bottomline_myLabels) { ?>
-
+  <?php if ($bottomline_myLabels) { ?>
     <li class="item labels">
       <div class="item-element dropdown dynamictags">
-        <div id="dropdown-labels-<?= $this->entry->id() ?>" class="dropdown-target"></div>
-        <a class="dropdown-toggle" href="#dropdown-labels-<?= $this->entry->id() ?>">
-          <?= _i('label') ?><span class="dropdown-label"><?= _t('index.menu.mylabels') ?></span>
+        <div id="dropdown-labels-<?= $this->entry->id() ?>"
+             class="dropdown-target"></div>
+        <a class="dropdown-toggle"
+           href="#dropdown-labels-<?= $this->entry->id() ?>">
+          <?= _i('label') ?>
+          <span class="dropdown-label">
+            <?= _t('index.menu.mylabels') ?>
+          </span>
         </a>
       </div>
     </li>
+  <?php } ?>
 
   <?php
-  }
-
-  $tags = $bottomline_tags ? $this->entry->tags() : null;
-  if (!empty($tags)) {
+    $tags = $bottomline_tags ? $this->entry->tags() : null;
+    if (!empty($tags)) {
   ?>
     <li class="item tags">
       <div class="item-element dropdown">
-        <div id="dropdown-tags-<?= $this->entry->id() ?>" class="dropdown-target"></div>
-        <a class="dropdown-toggle" href="#dropdown-tags-<?= $this->entry->id() ?>">
+        <div id="dropdown-tags-<?= $this->entry->id() ?>"
+             class="dropdown-target"></div>
+        <a class="dropdown-toggle"
+           href="#dropdown-tags-<?= $this->entry->id() ?>">
           <?= _i('tag') ?><?= _t('index.tag.related') ?>
         </a>
         <ul class="dropdown-menu">
           <?php foreach ($tags as $tag) { ?>
             <li class="item">
-              <a href="<?= _url('index', 'index', 'search', '#' . str_replace(' ', '+', htmlspecialchars_decode($tag, ENT_QUOTES))) ?>"><?= $tag ?></a>
+              <a href="<?= _url(
+                'index',
+                'index',
+                'search',
+                '#' . str_replace(' ', '+', htmlspecialchars_decode($tag, ENT_QUOTES))
+              ) ?>">
+                <?= $tag ?>
+              </a>
             </li>
           <?php } ?>
         </ul>
@@ -101,24 +109,25 @@ $bottomline_link      = FreshRSS_Context::userConf()->bottomline_link;
     </li>
   <?php } ?>
 
-  <li class="item share">
-    <?php
-    if ($bottomline_sharing) {
-    ?>
+  <?php if ($bottomline_sharing) { ?>
+    <li class="item share">
       <div class="item-element dropdown">
-        <div id="dropdown-share-<?= $this->entry->id() ?>" class="dropdown-target"></div>
-        <a class="dropdown-toggle" href="#dropdown-share-<?= $this->entry->id() ?>">
+        <div id="dropdown-share-<?= $this->entry->id() ?>"
+             class="dropdown-target"></div>
+        <a class="dropdown-toggle"
+           href="#dropdown-share-<?= $this->entry->id() ?>">
           <?= _i('share') ?><?= _t('index.share') ?>
         </a>
         <?php $this->renderHelper('index/normal/entry_share_menu'); ?>
         <a class="dropdown-close" href="#close">❌</a>
       </div>
-    <?php } ?>
-  </li>
+    </li>
+  <?php } ?>
 
   <?php if ($bottomline_date) { ?>
     <li class="item date">
-      <time datetime="<?= $this->entry->machineReadableDate() ?>" class="item-element">
+      <time datetime="<?= $this->entry->machineReadableDate() ?>"
+            class="item-element">
         <?= $this->entry->date() ?>
       </time>&nbsp;
     </li>
@@ -126,10 +135,13 @@ $bottomline_link      = FreshRSS_Context::userConf()->bottomline_link;
 
   <?php if ($bottomline_link) { ?>
     <li class="item link">
-      <a target="_blank" class="item-element" rel="noreferrer" href="<?= $this->entry->link() ?>" title="<?= _t('conf.shortcut.see_on_website') ?>">
+      <a target="_blank"
+         class="item-element"
+         rel="noreferrer"
+         href="<?= $this->entry->link() ?>"
+         title="<?= _t('conf.shortcut.see_on_website') ?>">
         <?= _i('link') ?>
       </a>
     </li>
   <?php } ?>
 </ul>
-```
