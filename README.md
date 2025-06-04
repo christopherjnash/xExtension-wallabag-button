@@ -1,6 +1,8 @@
 # FreshRSS Wallabag Button
 A [FreshRSS](https://freshrss.org/) extension which adds a [Wallabag](https://wallabag.org/) sharing integration.
 
+This fork incorporates several error-fixes backported from the Readeck version of the button, merged into the original Wallabag integration. It was originally forked from [Joedmin’s Wallabag Button](https://github.com/Joedmin/xExtension-wallabag-button/releases).
+
 With this extension you can simply press the Wallabag Button next to an article or a custom keyboard shortcut to share it with Wallabag. Everything else happens in the background while you can continue reading articles without any further interruptions.
 
 ## Download and setup
@@ -35,5 +37,7 @@ All changes in the PHP files are loaded with each page refresh.
 This extension is based on [freshrss-pocket-button](https://github.com/christian-putzke/freshrss-pocket-button) and re-branded for Wallabag.
 
 Thank you very much [Christian Putzke](https://github.com/christian-putzke) for creating the original extension. I used it every day until migrating from Pocket to Wallabag.
+
+[Joedmin’s Wallabag Button](https://github.com/Joedmin/xExtension-wallabag-button/releases) repository served as the starting point for this fork, and the changes made are modeled after [his code in the Readeck version of the addon](https://github.com/Joedmin/xExtension-readeck-button/compare/0.9...0.11) in response to my [issue that I submitted](https://github.com/Joedmin/xExtension-readeck-button/issues/13).
 
 Original Wallabag icon is used from the original [Wallabag repository](https://github.com/wallabag/wallabag) and the outlined version was made using [Inskape](https://inkscape.org/).

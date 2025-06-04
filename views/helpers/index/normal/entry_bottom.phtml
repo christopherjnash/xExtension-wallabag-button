@@ -1,14 +1,15 @@
+```php
 <?php
 
 declare(strict_types=1);
 /** @var FreshRSS_View $this */
-$bottomline_read = FreshRSS_Context::userConf()->bottomline_read;
-$bottomline_favorite = FreshRSS_Context::userConf()->bottomline_favorite;
-$bottomline_sharing = FreshRSS_Context::userConf()->bottomline_sharing && (count(FreshRSS_Context::userConf()->sharing) > 0);
-$bottomline_myLabels = FreshRSS_Context::userConf()->bottomline_myLabels;
-$bottomline_tags = FreshRSS_Context::userConf()->bottomline_tags;
-$bottomline_date = FreshRSS_Context::userConf()->bottomline_date;
-$bottomline_link = FreshRSS_Context::userConf()->bottomline_link;
+$bottomline_read      = FreshRSS_Context::userConf()->bottomline_read;
+$bottomline_favorite  = FreshRSS_Context::userConf()->bottomline_favorite;
+$bottomline_sharing   = FreshRSS_Context::userConf()->bottomline_sharing && (count(FreshRSS_Context::userConf()->sharing) > 0);
+$bottomline_myLabels  = FreshRSS_Context::userConf()->bottomline_myLabels;
+$bottomline_tags      = FreshRSS_Context::userConf()->bottomline_tags;
+$bottomline_date      = FreshRSS_Context::userConf()->bottomline_date;
+$bottomline_link      = FreshRSS_Context::userConf()->bottomline_link;
 ?>
 
 <ul class="horizontal-list bottom">
@@ -30,13 +31,14 @@ $bottomline_link = FreshRSS_Context::userConf()->bottomline_link;
 
     <?php
     }
-    $extension = Minz_ExtensionManager::findExtension('Wallabag Button');
-    $wallabag_button_icon = $extension->getFileUrl('add_to_wallabag.svg', 'svg');
+
+    $extension             = Minz_ExtensionManager::findExtension('Wallabag Button');
+    $wallabag_button_icon  = $extension->getFileUrl('add_to_wallabag.svg', 'svg');
     ?>
 
     <li class="item manage">
       <?php
-      $arUrl = array('c' => 'wallabagButton', 'a' => 'add', 'params' => array('id' => $this->entry->id()));
+      $arUrl = ['c' => 'wallabagButton', 'a' => 'add', 'params' => ['id' => $this->entry->id()]];
       ?>
       <a class="item-element wallabagButton" href="<?= Minz_Url::display($arUrl); ?>">
         <div class="lds-dual-ring disabled"></div>
@@ -60,32 +62,24 @@ $bottomline_link = FreshRSS_Context::userConf()->bottomline_link;
         </a>
       </li>
 
-    <?php }
-  }
+    <?php } 
+  } ?>
+
+  <?php
   if ($bottomline_myLabels) { ?>
 
     <li class="item labels">
       <div class="item-element dropdown dynamictags">
-        <div id="dropdown-labels-<?= $this->entry->id() ?>" class="dropdown-target">
-
-        </div>
+        <div id="dropdown-labels-<?= $this->entry->id() ?>" class="dropdown-target"></div>
         <a class="dropdown-toggle" href="#dropdown-labels-<?= $this->entry->id() ?>">
-          <?= _i('label') ?><?= _t('index.menu.tags') ?>
+          <?= _i('label') ?><span class="dropdown-label"><?= _t('index.menu.mylabels') ?></span>
         </a>
-        <ul class="dropdown-menu dropdown-menu-scrollable scrollbar-thin">
-          <li class="dropdown-header">
-            <?= _t('index.menu.tags') ?>
-            <?php if (FreshRSS_Auth::hasAccess()) { ?>
-              <a href="<?= _url('tag', 'index') ?>"><?= _i('configure') ?></a>
-            <?php } ?>
-          </li>
-          <!-- Ajax -->
-        </ul>
-        <a class="dropdown-close" href="#close">❌</a>
       </div>
     </li>
+
   <?php
   }
+
   $tags = $bottomline_tags ? $this->entry->tags() : null;
   if (!empty($tags)) {
   ?>
@@ -125,14 +119,17 @@ $bottomline_link = FreshRSS_Context::userConf()->bottomline_link;
   <?php if ($bottomline_date) { ?>
     <li class="item date">
       <time datetime="<?= $this->entry->machineReadableDate() ?>" class="item-element">
-        <?= $this->entry->date() ?></time>&nbsp;
+        <?= $this->entry->date() ?>
+      </time>&nbsp;
     </li>
+  <?php } ?>
 
-  <?php }
-  if ($bottomline_link) { ?>
-    <li class="item link"><a target="_blank" class="item-element" rel="noreferrer" href="<?= $this->entry->link() ?>" title="<?= _t('conf.shortcut.see_on_website') ?>">
+  <?php if ($bottomline_link) { ?>
+    <li class="item link">
+      <a target="_blank" class="item-element" rel="noreferrer" href="<?= $this->entry->link() ?>" title="<?= _t('conf.shortcut.see_on_website') ?>">
         <?= _i('link') ?>
       </a>
     </li>
   <?php } ?>
 </ul>
+```
